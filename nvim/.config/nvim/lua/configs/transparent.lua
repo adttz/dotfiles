@@ -1,33 +1,21 @@
 -- ==============================
 -- configs/transparent.lua
--- Force transparency for all themes
 -- ==============================
 
-local M = {}
-
-function M.enable()
-  -- groups to clear backgrounds for
-  local groups = {
-    "Normal", "NormalNC", "NormalFloat",
-    "SignColumn", "VertSplit", "StatusLine", "StatusLineNC",
-    "LineNr", "EndOfBuffer", "CursorLineNr", "WinSeparator",
-  }
-
-  -- clear bg for each
+local function set_active_tab_bg()
+  local bg = "#3c3836" -- Adjust these colours for tab bg
+  local fg = "#ebdbb2"
+  local groups = { "TbBufOn", "TbBufOnClose", "TbBufOnModified" }
   for _, group in ipairs(groups) do
-    vim.cmd("highlight " .. group .. " guibg=none ctermbg=none")
+    vim.api.nvim_set_hl(0, group, { bg = bg, fg = fg, bold = true })
   end
 end
 
--- apply once on startup
-M.enable()
-
--- re-apply after every colorscheme load
-vim.api.nvim_create_autocmd("ColorScheme", {
-  pattern = "*",
+-- apply on every event that might reset highlights
+vim.api.nvim_create_autocmd({ "VimEnter", "ColorScheme", "BufEnter", "UIEnter" }, {
   callback = function()
-    M.enable()
+    vim.defer_fn(set_active_tab_bg, 50)
   end,
 })
 
-return M
+return {}
