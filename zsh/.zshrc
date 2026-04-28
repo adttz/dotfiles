@@ -45,6 +45,16 @@ chpwd() {
 }
 
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+_tab_or_complete() {
+  if [[ -n "$POSTDISPLAY" && "$BUFFER" != *" " && "$BUFFER" != *"/" ]]; then
+    zle autosuggest-accept
+  else
+    zle expand-or-complete
+  fi
+}
+zle -N _tab_or_complete
+bindkey '\t' _tab_or_complete
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 
